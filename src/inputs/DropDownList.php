@@ -14,14 +14,14 @@ class DropDownList extends AttributeHandler
     {
         parent::init();
 
-        $this->owner->addRule($this->attributeModel->getPrimaryKey(), 'in', [
+        $this->owner->addRule($this->getAttributeName(), 'in', [
             'range' => $this->getOptions(),
         ]);
     }
 
     public function run()
     {
-        return $this->owner->activeForm->field($this->owner, $this->attributeModel->getPrimaryKey())
+        return $this->owner->activeForm->field($this->owner, $this->getAttributeName())
             ->dropDownList(
                 ArrayHelper::map($this->attributeModel->getOptions()->asArray()->all(), 'id', 'value')
             );

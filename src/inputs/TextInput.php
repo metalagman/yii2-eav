@@ -12,12 +12,12 @@ class TextInput extends AttributeHandler
     public function init()
     {
         parent::init();
-        $this->owner->addRule($this->attributeModel->getPrimaryKey(), 'string', ['max' => 255]);
+        $this->owner->addRule($this->getAttributeName(), 'string', ['max' => 255]);
     }
 
     public function run()
     {
-        return $this->owner->activeForm->field($this->owner, $this->attributeModel->getPrimaryKey())
+        return $this->owner->activeForm->field($this->owner, $this->getAttributeName())
             ->textInput();
     }
 }

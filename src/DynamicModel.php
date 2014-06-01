@@ -27,6 +27,8 @@ class DynamicModel extends BaseDynamicModel
     /** @var string[] */
     private $attributeLabels = [];
 
+    public $fieldPrefix = 'field';
+
     /**
      * Constructor for creating form model from entity object
      *
@@ -41,10 +43,12 @@ class DynamicModel extends BaseDynamicModel
         foreach ($model->entityModel->getRelation('eavAttributes')->all() as $attribute) {
             $handler = AttributeHandler::load($model, $attribute);
 
-            $model->defineAttribute($attribute->primaryKey, $handler->valueHandler->load());
-            $model->defineAttributeLabel($attribute->primaryKey, $attribute->getAttribute('name'));
+            $key = $model->fieldPrefix . strval($attribute->getPrimaryKey());
 
-            $model->handlers[$attribute->primaryKey] = $handler;
+            $model->defineAttribute($key, $handler->valueHandler->load());
+            $model->defineAttributeLabel($key, $attribute->getAttribute('name'));
+
+            $model->handlers[$key] = $handler;
         }
 
         return $model;

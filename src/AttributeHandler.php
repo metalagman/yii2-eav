@@ -56,6 +56,11 @@ class AttributeHandler extends Widget
         ]);
     }
 
+    public function getAttributeName()
+    {
+        return $this->owner->fieldPrefix . $this->attributeModel->getPrimaryKey();
+    }
+
     public function getOptions()
     {
         $result = [];
