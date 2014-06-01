@@ -1,0 +1,24 @@
+{
+    "name": "lagman/yii2-eav",
+    "description": "EAV for Yii2",
+    "license": "MIT",
+	"keywords": ["yii2", "eav"],
+    "authors": [
+        {
+            "name": "Alexey Samoylov",
+            "email": "alexey.samoylov@gmail.com",
+            "homepage": "http://yiiblog.ru",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php":">=5.4.0",
+		"yiisoft/yii2": "*",
+    },
+    "autoload": {
+        "psr-4": {
+            "lagman\\eav\\": ""
+        }
+    }
+}
