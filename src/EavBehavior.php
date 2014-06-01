@@ -6,6 +6,7 @@
 namespace lagman\eav;
 
 use yii\base\Behavior;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
@@ -14,13 +15,19 @@ use yii\db\ActiveRecord;
  *
  * @mixin ActiveRecord
  * @property DynamicModel $eav;
+ * @property ActiveRecord $owner
  */
 class EavBehavior extends Behavior
 {
     /** @var array */
-    public $config = [];
+    public $valueClass;
 
     protected $dynamicModel;
+
+    public function init()
+    {
+        assert(isset($this->valueClass));
+    }
 
     /**
      * @return DynamicModel
@@ -28,7 +35,10 @@ class EavBehavior extends Behavior
     public function getEav()
     {
         if (!$this->dynamicModel instanceof DynamicModel) {
-            $this->dynamicModel = DynamicModel::create($this->owner, $this->config);
+            $this->dynamicModel = DynamicModel::create([
+                'entityModel' => $this->owner,
+                'valueClass' => $this->valueClass,
+            ]);
         }
         return $this->dynamicModel;
     }

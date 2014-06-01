@@ -17,7 +17,7 @@ class TextInput extends AttributeHandler
 
     public function run()
     {
-        return $this->owner->activeForm->field($this->owner, $this->attributeModel->primaryKey)
+        return $this->owner->activeForm->field($this->owner, $this->attributeModel->getPrimaryKey())
             ->textInput();
     }
 }

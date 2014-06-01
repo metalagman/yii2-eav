@@ -7,6 +7,7 @@ namespace lagman\eav;
 
 use Yii;
 use yii\base\DynamicModel as BaseDynamicModel;
+use yii\db\ActiveRecord;
 use yii\widgets\ActiveForm;
 
 /**
@@ -15,10 +16,10 @@ use yii\widgets\ActiveForm;
  */
 class DynamicModel extends BaseDynamicModel
 {
-    /** @var interfaces\EntityModel */
+    /** @var string Class to use for storing data */
+    public $valueClass;
+    /** @var ActiveRecord */
     public $entityModel;
-    /** @var DynamicModelConfig */
-    public $config;
     /** @var AttributeHandler[] */
     public $handlers;
     /** @var ActiveForm */
@@ -29,23 +30,15 @@ class DynamicModel extends BaseDynamicModel
     /**
      * Constructor for creating form model from entity object
      *
-     * @param interfaces\EntityModel $owner
-     * @param DynamicModelConfig $config
+     * @param array $params
      * @return static
      */
-    public static function create($owner, $config)
+    public static function create($params)
     {
-        $model = new DynamicModel();
-        $model->entityModel = $owner;
+        $params['class'] = static::className();
+        $model = Yii::createObject($params);
 
-        if (!$config instanceof DynamicModelConfig) {
-            $config['class'] = DynamicModelConfig::className();
-            $config = \Yii::createObject($config);
-        }
-
-        $model->config = $config;
-
-        foreach ($owner->getRelation($config->entityAttributesRelation)->all() as $attribute) {
+        foreach ($model->entityModel->getRelation('eavAttributes')->all() as $attribute) {
             $handler = AttributeHandler::load($model, $attribute);
 
             $model->defineAttribute($attribute->primaryKey, $handler->valueHandler->load());
@@ -96,14 +89,4 @@ class DynamicModel extends BaseDynamicModel
             throw $e;
         }
     }
-
-//    /**
-//     * @inheritdoc
-//     */
-//    public function scenarios()
-//    {
-//        return [
-//            'default' => [],
-//        ];
-//    }
 }

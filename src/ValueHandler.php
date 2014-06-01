@@ -5,15 +5,13 @@
 
 namespace lagman\eav;
 
-use lagman\eav\interfaces\ValueModel;
-use yii\base\Exception;
 use yii\db\ActiveRecord;
 
 /**
  * Class ValueHandler
  * @package lagman\eav
  *
- * @property ValueModel $valueModel
+ * @property ActiveRecord $valueModel
  */
 abstract class ValueHandler
 {
@@ -21,28 +19,28 @@ abstract class ValueHandler
     public $attributeHandler;
 
     /**
-     * @return ValueModel|static
-     * @throws Exception
+     * @return ActiveRecord
+     * @throws \Exception
      * @throws \yii\base\InvalidConfigException
      */
     public function getValueModel()
     {
         $dynamicModel = $this->attributeHandler->owner;
-        /** @var ValueModel $valueClass */
-        $valueClass = $dynamicModel->config->valueClass;
+        /** @var ActiveRecord $valueClass */
+        $valueClass = $dynamicModel->valueClass;
 
         $valueModel = $valueClass::findOne([
-            $dynamicModel->config->valueEntityLink => $dynamicModel->entityModel->getPrimaryKey(),
-            $dynamicModel->config->valueAttributeLink => $this->attributeHandler->attributeModel->getPrimaryKey(),
+            'entityId' => $dynamicModel->entityModel->getPrimaryKey(),
+            'attributeId' => $this->attributeHandler->attributeModel->getPrimaryKey(),
         ]);
 
         if (!$valueModel instanceof ActiveRecord) {
-            /** @var ValueModel $model */
+            /** @var ActiveRecord $valueModel */
             $valueModel = new $valueClass;
-            $valueModel->{$dynamicModel->config->valueEntityLink} = $dynamicModel->entityModel->primaryKey;
-            $valueModel->{$dynamicModel->config->valueAttributeLink} = $this->attributeHandler->attributeModel->primaryKey;
+            $valueModel->entityId = $dynamicModel->entityModel->getPrimaryKey();
+            $valueModel->attributeId = $this->attributeHandler->attributeModel->getPrimaryKey();
             if (!$valueModel->save())
-                throw new Exception("Can't save value model");
+                throw new \Exception("Can't save value model");
         }
 
         return $valueModel;

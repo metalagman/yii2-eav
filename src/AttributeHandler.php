@@ -5,9 +5,10 @@
 
 namespace lagman\eav;
 
-use lagman\eav\interfaces\AttributeModel;
+use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Widget;
+use yii\db\ActiveRecord;
 
 /**
  * Class AttributeHandler
@@ -20,12 +21,12 @@ class AttributeHandler extends Widget
     public $owner;
     /** @var ValueHandler */
     public $valueHandler;
-    /** @var AttributeModel */
+    /** @var ActiveRecord */
     public $attributeModel;
 
     /**
      * @param DynamicModel $owner
-     * @param AttributeModel $attributeModel
+     * @param ActiveRecord $attributeModel
      * @return AttributeHandler
      * @throws \yii\base\InvalidConfigException
      */
@@ -34,7 +35,7 @@ class AttributeHandler extends Widget
         if (!class_exists($class = $attributeModel->type->handlerClass))
             throw new InvalidParamException('Unknown class: ' . $class);
 
-        $handler = \Yii::createObject([
+        $handler = Yii::createObject([
             'class' => $class,
             'owner' => $owner,
             'attributeModel' => $attributeModel
@@ -44,9 +45,12 @@ class AttributeHandler extends Widget
         return $handler;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
-        $this->valueHandler = \Yii::createObject([
+        $this->valueHandler = Yii::createObject([
             'class' => static::VALUE_HANDLER_CLASS,
             'attributeHandler' => $this,
         ]);
@@ -55,10 +59,7 @@ class AttributeHandler extends Widget
     public function getOptions()
     {
         $result = [];
-        $options = $this->attributeModel->getRelation(
-            $this->owner->config->attributeOptionsRelation
-        )->all();
-        foreach ($options as $option)
+        foreach ($this->attributeModel->options as $option)
             $result[] = $option->getPrimaryKey();
         return $result;
     }
