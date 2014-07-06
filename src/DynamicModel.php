@@ -38,15 +38,25 @@ class DynamicModel extends BaseDynamicModel
     public static function create($params)
     {
         $params['class'] = static::className();
+        /** @var static $model */
         $model = Yii::createObject($params);
 
         foreach ($model->entityModel->getRelation('eavAttributes')->all() as $attribute) {
             $handler = AttributeHandler::load($model, $attribute);
 
-            $key = $model->fieldPrefix . strval($attribute->getPrimaryKey());
+            $key = $handler->getAttributeName();
 
             $model->defineAttribute($key, $handler->valueHandler->load());
             $model->defineAttributeLabel($key, $attribute->getAttribute('name'));
+
+            if ($attribute->required)
+                $model->addRule($key, 'required');
+
+            if ($attribute->type->storeType == ValueHandler::STORE_TYPE_RAW)
+                $model->addRule($key, 'default', ['value' => $attribute->defaultValue]);
+
+            if ($attribute->type->storeType == ValueHandler::STORE_TYPE_OPTION)
+                $model->addRule($key, 'default', ['value' => $attribute->defaultOptionId]);
 
             $model->handlers[$key] = $handler;
         }

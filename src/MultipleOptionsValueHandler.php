@@ -41,7 +41,7 @@ class MultipleOptionsValueHandler extends ValueHandler
         /** @var ActiveRecord $valueClass */
         $valueClass = $dynamicModel->valueClass;
 
-        $baseQuery = $valueClass::find([
+        $baseQuery = $valueClass::find()->where([
             'entityId' => $dynamicModel->entityModel->getPrimaryKey(),
             'attributeId' => $this->attributeHandler->attributeModel->getPrimaryKey(),
         ]);
@@ -51,22 +51,23 @@ class MultipleOptionsValueHandler extends ValueHandler
             $allOptions[] = $option->getPrimaryKey();
 
         $query = clone $baseQuery;
-        $query->andWhere("optionId NOT IN (:options)", [
+        $query->andWhere("optionId NOT IN (:options)");
+        $valueClass::deleteAll($query->where, [
             'options' => implode(',', $allOptions),
         ]);
-        $valueClass::deleteAll($query->where);
 
         // then we delete unselected options
-        $selectedOptions = $dynamicModel->attributes[$this->attributeHandler->attributeModel->getPrimaryKey()];
+        $selectedOptions = $dynamicModel->attributes[$this->attributeHandler->getAttributeName()];
         if (!is_array($selectedOptions))
             $selectedOptions = [];
         $deleteOptions = array_diff($allOptions, $selectedOptions);
 
         $query = clone $baseQuery;
-        $query->andWhere("optionId IN (:options)", [
+        $query->andWhere("optionId IN (:options)");
+
+        $valueClass::deleteAll($query->where, [
             'options' => implode(',', $deleteOptions),
         ]);
-        $valueClass::deleteAll($query->where);
 
         // third we insert missing options
         foreach ($selectedOptions as $id) {

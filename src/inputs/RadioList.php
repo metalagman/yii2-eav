@@ -8,7 +8,7 @@ namespace lagman\eav\inputs;
 use lagman\eav\AttributeHandler;
 use yii\helpers\ArrayHelper;
 
-class DropDownList extends AttributeHandler
+class RadioList extends AttributeHandler
 {
     const VALUE_HANDLER_CLASS = '\lagman\eav\OptionValueHandler';
 
@@ -24,7 +24,7 @@ class DropDownList extends AttributeHandler
     public function run()
     {
         return $this->owner->activeForm->field($this->owner, $this->getAttributeName())
-            ->dropDownList(
+            ->radioList(
                 ArrayHelper::map($this->attributeModel->getOptions()->asArray()->all(), 'id', 'value')
             );
     }

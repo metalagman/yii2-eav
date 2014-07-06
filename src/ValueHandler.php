@@ -15,6 +15,10 @@ use yii\db\ActiveRecord;
  */
 abstract class ValueHandler
 {
+    const STORE_TYPE_RAW = 0;
+    const STORE_TYPE_OPTION = 1;
+    const STORE_TYPE_MULTIPLE_OPTIONS = 2;
+
     /** @var AttributeHandler */
     public $attributeHandler;
 

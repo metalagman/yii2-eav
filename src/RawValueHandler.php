@@ -29,7 +29,7 @@ class RawValueHandler extends ValueHandler
         $valueModel = $this->getValueModel();
 
         $valueModel->value =
-            $dynamicModel->attributes[$this->attributeHandler->attributeModel->getPrimaryKey()];
+            $dynamicModel->attributes[$this->attributeHandler->getAttributeName()];
         if (!$valueModel->save())
             throw new \Exception("Can't save value model");
     }

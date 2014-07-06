@@ -20,9 +20,6 @@ class OptionValueHandler extends ValueHandler
         return $valueModel->optionId;
     }
 
-    /** @var AttributeHandler */
-    public $attributeHandler;
-
     /**
      * @inheritdoc
      */
@@ -32,7 +29,8 @@ class OptionValueHandler extends ValueHandler
         $valueModel = $this->getValueModel();
 
         $valueModel->optionId =
-            $dynamicModel->attributes[$this->attributeHandler->attributeModel->getPrimaryKey()];
+            $dynamicModel->attributes[$this->attributeHandler->getAttributeName()];
+
         if (!$valueModel->save())
             throw new \Exception("Can't save value model");
     }
