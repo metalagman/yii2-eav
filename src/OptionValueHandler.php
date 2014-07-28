@@ -34,4 +34,9 @@ class OptionValueHandler extends ValueHandler
         if (!$valueModel->save())
             throw new \Exception("Can't save value model");
     }
+
+    public function getTextValue()
+    {
+        return $this->getValueModel()->option->value;
+    }
 }

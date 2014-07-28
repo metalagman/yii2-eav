@@ -87,4 +87,23 @@ class MultipleOptionsValueHandler extends ValueHandler
             }
         }
     }
+
+    public function getTextValue()
+    {
+        $dynamicModel = $this->attributeHandler->owner;
+        /** @var ActiveRecord $valueClass */
+        $valueClass = $dynamicModel->valueClass;
+
+        $models = $valueClass::findAll([
+            'entityId' => $dynamicModel->entityModel->getPrimaryKey(),
+            'attributeId' => $this->attributeHandler->attributeModel->getPrimaryKey(),
+        ]);
+
+        $values = [];
+        foreach ($models as $model) {
+            $values[] = $model->option->value;
+        }
+
+        return implode(', ', $values);
+    }
 }

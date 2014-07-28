@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @package lagman\eav
  *
  * @property ActiveRecord $valueModel
+ * @property string $textValue
  */
 abstract class ValueHandler
 {
@@ -53,4 +54,6 @@ abstract class ValueHandler
     abstract public function load();
 
     abstract public function save();
+
+    abstract public function getTextValue();
 }

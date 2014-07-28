@@ -27,7 +27,7 @@ class DynamicModel extends BaseDynamicModel
     /** @var string[] */
     private $attributeLabels = [];
 
-    public $fieldPrefix = 'field';
+    public $fieldPrefix = 'eav';
 
     /**
      * Constructor for creating form model from entity object
